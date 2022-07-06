@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 
 class Weather {
   int _cityId = 0;
-  String _cityName = "";
+  String _cityName = "Омск";
 
   final _appid = '69856b5b43fc307c7b50ccafb0b06dbf';
   final _units = 'metric';
@@ -36,8 +36,15 @@ class Weather {
     return parameters;
   }
 
+  String getCityName() {
+    return _cityName;
+  }
+
+  void setCityName(String cityName) {
+    _cityName = cityName;
+  }
+
   Future<int> findCity(String city) async {
-    _cityName = city;
     Dio dio = Dio(options);
     try {
       Response response = await dio.request(
@@ -67,6 +74,7 @@ class Weather {
         queryParameters: _cityId > 0 ? _queryParameters(<String, String>{"id": _cityId.toString()}) : _queryParameters(<String, String>{"q": _cityName}),
       );
       weatherMap['Описание'] = response.data['weather'][0]['description'];
+      weatherMap['Иконка'] = response.data['weather'][0]['icon'];
       weatherMap['Температура'] = response.data['main']['temp'].round();
       weatherMap['Давление'] = response.data['main']['pressure'];
       weatherMap['Влажность'] = response.data['main']['humidity'];
@@ -93,6 +101,7 @@ class Weather {
         weatherMap['Дата'] = i['dt_txt'].split(" ")[0];
         weatherMap['Время'] = i['dt_txt'].split(" ")[1].substring(0, 5);
         weatherMap['Описание'] = i['weather'][0]['description'];
+        weatherMap['Иконка'] = i['weather'][0]['icon'];
         weatherMap['Температура'] = i['main']['temp'].round();
         weatherMap['Скорость ветра'] = i['wind']['speed'];
         weatherMap['Направление ветра'] = _windDirection(i['wind']['deg']);
