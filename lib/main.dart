@@ -1,41 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
+import 'package:weather_app/requests/weather.dart';
 
-void main() {
+void main() async {
   runApp(
     MaterialApp(
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: DioDemo(),
+      home: DioDemo(weather: Weather()),
     ),
   );
 }
 
 class DioDemo extends StatefulWidget {
-  const DioDemo({Key? key}) : super(key: key);
+  const DioDemo({super.key, required this.weather});
+
+  final Weather weather;
 
   @override
   State<DioDemo> createState() => _DioDemoState();
 }
 
 class _DioDemoState extends State<DioDemo> {
-  @override
-  String APPID = '69856b5b43fc307c7b50ccafb0b06dbf';
-  String city = 'Omsk,RU';
-  String units = 'metric';
 
-  void _sendRequest() async {
-    Dio dio = Dio();
-    Response response = await dio.request(
-      'http://api.openweathermap.org/data/2.5/find',
-      options: Options(method: 'GET'),
-      queryParameters: <String, String>{
-        'q': city,
-        'units': units,
-        'type': 'like',
-        'APPID': APPID
-      },
-    );
-    print(response.data['list']);
+  @override
+  void initState() {
+    super.initState();
   }
 
   Widget build(BuildContext context) {
@@ -51,7 +39,10 @@ class _DioDemoState extends State<DioDemo> {
             children: [
               Image.asset("assets/weather_icons/cloudy_moon.png"),
               ElevatedButton(
-                onPressed: () => _sendRequest(),
+                onPressed: () {
+                  print(widget.weather.findCity("Омск"));
+                  widget.weather.getNowWeather();
+                },
                 child: const Text(
                   "Отправить запрос",
                   style: TextStyle(
