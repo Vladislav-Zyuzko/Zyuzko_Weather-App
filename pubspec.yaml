@@ -38,6 +38,8 @@ dependencies:
   geolocator: ^9.0.0
   location_permissions: ^4.0.1
   weather_icons: ^3.0.0
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
 
 dev_dependencies:
   flutter_test:

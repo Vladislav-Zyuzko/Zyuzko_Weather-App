@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:weather_app/requests/weather.dart';
 import 'package:weather_app/pages/main_screen/main_content.dart';
 import 'package:weather_app/pages/main_screen/load_content.dart';
 import 'package:weather_app/pages/main_screen/invalid_content.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key, required this.weather});
+  const Home({super.key, required this.weather, required this.userBox});
 
   final Weather weather;
+  final Box userBox;
 
   @override
   State<Home> createState() => _Home();
@@ -58,17 +60,50 @@ class _Home extends State<Home> {
   }
 
   dynamic returnContent() {
-    if (widget.weather.getStatus()) {
-      if (weatherLog.isNotEmpty) {
-        return MainContent(weather: widget.weather, weatherLog: weatherLog,
-            forecastLog: forecastLog, iconsMap: iconsMap, iconUrl: iconUrl);
-      } else { return const LoadContent(); }
-    } else {return const InvalidContent();}
+      if (widget.weather.getStatus()) {
+        if (weatherLog.isNotEmpty) {
+          return MainContent(weather: widget.weather, weatherLog: weatherLog,
+              forecastLog: forecastLog, iconsMap: iconsMap, iconUrl: iconUrl);
+        } else { return const LoadContent(); }
+      } else {return const InvalidContent();}
+    }
+
+  void enterCityAlert() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Введите населенный пункт"),
+          content: TextField(
+            onChanged: (String str) {
+              widget.weather.setCityName(str);
+              widget.userBox.put('city', str);
+            },
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () async {
+                int key = await widget.weather
+                    .findCity(widget.weather.getCityName());
+                print(key);
+                setState(() {
+                  getWeatherData();
+                  getForecastData();
+                });
+                Navigator.of(context).pop();
+              },
+              child: const Text("Принять"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   void initState() {
     super.initState();
+    widget.weather.setCityName(widget.userBox.get('city'));
     getWeatherData();
     getForecastData();
   }
@@ -86,36 +121,7 @@ class _Home extends State<Home> {
           ),
         ),
         leading: IconButton(
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text("Введите населенный пункт"),
-                  content: TextField(
-                    onChanged: (String str) {
-                      widget.weather.setCityName(str);
-                    },
-                  ),
-                  actions: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        int key = await widget.weather
-                            .findCity(widget.weather.getCityName());
-                        print(key);
-                        setState(() {
-                          getWeatherData();
-                          getForecastData();
-                        });
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text("Принять"),
-                    ),
-                  ],
-                );
-              },
-            );
-          },
+          onPressed: () => enterCityAlert(),
           icon: const Icon(
             Icons.location_on_outlined,
             color: Colors.white,

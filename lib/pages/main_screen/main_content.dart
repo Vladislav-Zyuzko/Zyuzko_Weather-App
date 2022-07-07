@@ -26,7 +26,7 @@ class _MainContent extends State<MainContent> {
           'Погода ${widget.weather.getCityName()}',
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 25,
+            fontSize: 30,
             fontWeight: FontWeight.bold,
           ),
         ),
