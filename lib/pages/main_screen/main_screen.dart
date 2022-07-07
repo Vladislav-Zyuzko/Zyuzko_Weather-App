@@ -14,7 +14,7 @@ class Home extends StatefulWidget {
 }
 
 class _Home extends State<Home> {
-  final iconsMap = <String, String>{
+  Map<String, String> iconsMap = <String, String>{
     '01d': 'assets/weather_icons/clear_sun.png',
     '01n': 'assets/weather_icons/clear_moon.png',
     '02d': 'assets/weather_icons/cloudy_sun.png',
@@ -37,6 +37,7 @@ class _Home extends State<Home> {
 
   String iconUrl = 'assets/weather_icons/no_connect_white.png';
   Map<String, dynamic> weatherLog = <String, dynamic>{};
+  List<dynamic> forecastLog = [];
 
   void getWeatherData() async {
     weatherLog = <String, dynamic>{};
@@ -47,10 +48,20 @@ class _Home extends State<Home> {
     });
   }
 
+  void getForecastData() async {
+    forecastLog = [];
+    forecastLog = await widget.weather.getLongForecast();
+    setState(() {
+      iconUrl = iconsMap[weatherLog['Иконка']] ??
+          'assets/weather_icons/no_connect_white.png';
+    });
+  }
+
   dynamic returnContent() {
     if (widget.weather.getStatus()) {
       if (weatherLog.isNotEmpty) {
-        return MainContent(weather: widget.weather, weatherLog: weatherLog, iconUrl: iconUrl);
+        return MainContent(weather: widget.weather, weatherLog: weatherLog,
+            forecastLog: forecastLog, iconsMap: iconsMap, iconUrl: iconUrl);
       } else { return const LoadContent(); }
     } else {return const InvalidContent();}
   }
@@ -59,6 +70,7 @@ class _Home extends State<Home> {
   void initState() {
     super.initState();
     getWeatherData();
+    getForecastData();
   }
 
   Widget build(BuildContext context) {
@@ -93,6 +105,7 @@ class _Home extends State<Home> {
                         print(key);
                         setState(() {
                           getWeatherData();
+                          getForecastData();
                         });
                         Navigator.of(context).pop();
                       },
@@ -133,13 +146,7 @@ class _Home extends State<Home> {
             ],
           ),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            //MainContent(weather: widget.weather, weatherLog: weatherLog, iconUrl: iconUrl),
-            returnContent(),
-          ],
-        ),
+        child: returnContent(),
       ),
     );
   }

@@ -1,13 +1,31 @@
 import 'package:dio/dio.dart';
 
 class Weather {
+
   int _cityId = 0;
+  int _timezone = 21600;
+
   String _cityName = "Омск";
 
   bool _status = true;
 
   final _appid = '69856b5b43fc307c7b50ccafb0b06dbf';
   final _units = 'metric';
+
+  final Map <int, String> _monthsMap = <int, String> {
+    1: 'Января',
+    2: 'Февраля',
+    3: 'Марта',
+    4: 'Апреля',
+    5: 'Мая',
+    6: 'Июня',
+    7: 'Июля',
+    8: 'Августа',
+    9: 'Сентября',
+    10: 'Октября',
+    11: 'Ноября',
+    12: 'Декабря',
+  };
 
   BaseOptions options = BaseOptions(
     receiveDataWhenStatusError: true,
@@ -26,9 +44,20 @@ class Weather {
     else {return "C";}
   }
 
+  String _getLocalTime (int dt) {
+    return "${DateTime.fromMillisecondsSinceEpoch((dt + _timezone) * 1000).hour}:00";
+  }
+
+  String _getLocalDay (int dt) {
+    return "${DateTime.fromMillisecondsSinceEpoch((dt + _timezone) * 1000).day}";
+  }
+
+  int _getLocalMonth (int dt) {
+    return DateTime.fromMillisecondsSinceEpoch((dt + _timezone) * 1000).month;
+  }
+
   Map<String, String> _queryParameters(Map<String, String> newParameter) {
     final parameters = <String, String>{
-      'type': 'like',
       'id': _cityId.toString(),
       'units': _units,
       'lang': 'ru',
@@ -63,7 +92,6 @@ class Weather {
         },
       );
       _cityId = response.data['count'] == 0 ? 0 : response.data['list'][0]['id'];
-      print(_cityId);
       return _cityId;
     } on DioError  { return -1;}
   }
@@ -87,7 +115,6 @@ class Weather {
       weatherMap['Скорость ветра'] = response.data['wind']['speed'];
       weatherMap['Направление ветра'] = _windDirection(response.data['wind']['deg']);
       weatherMap['Угол ветра'] = response.data['wind']['deg'];
-      print(weatherMap);
       _status = true;
       return weatherMap;
     } on DioError  {_status = false; return weatherMap;}
@@ -103,11 +130,13 @@ class Weather {
         'http://api.openweathermap.org/data/2.5/forecast',
         options: Options(method: 'GET'),
         queryParameters: _cityId > 0 ? _queryParameters(<String, String>{"id": _cityId.toString()}) : _queryParameters(<String, String>{"q": _cityName}),
-    );
+      );
+      _timezone = response.data['city']['timezone'];
       for (var i in response.data['list']) {
         Map weatherMap = <String, dynamic>{};
-        weatherMap['Дата'] = i['dt_txt'].split(" ")[0];
-        weatherMap['Время'] = i['dt_txt'].split(" ")[1].substring(0, 5);
+        weatherMap['День'] = _getLocalDay(i['dt']);
+        weatherMap['Месяц'] = _monthsMap[_getLocalMonth(i['dt'])];
+        weatherMap['Время'] = _getLocalTime(i['dt']);
         weatherMap['Описание'] = i['weather'][0]['description'];
         weatherMap['Иконка'] = i['weather'][0]['icon'];
         weatherMap['Температура'] = i['main']['temp'].round();
@@ -116,7 +145,6 @@ class Weather {
         forecastList.add(weatherMap);
       }
       _status = true;
-      print(forecastList);
       return forecastList;
     } on DioError  {_status = false; return forecastList;}
   }
