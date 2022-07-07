@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:weather_app/requests/weather.dart';
+import 'package:weather_app/pages/main_screen/main_content.dart';
+import 'package:weather_app/pages/main_screen/load_content.dart';
+import 'package:weather_app/pages/main_screen/invalid_content.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key, required this.weather});
@@ -36,6 +39,7 @@ class _Home extends State<Home> {
   Map<String, dynamic> weatherLog = <String, dynamic>{};
 
   void getWeatherData() async {
+    weatherLog = <String, dynamic>{};
     weatherLog = await widget.weather.getNowWeather();
     setState(() {
       iconUrl = iconsMap[weatherLog['Иконка']] ??
@@ -43,10 +47,12 @@ class _Home extends State<Home> {
     });
   }
 
-  String getTemp() {
-    return weatherLog['Температура'] != null
-        ? '${weatherLog['Температура'].toString()}°'
-        : '';
+  dynamic returnContent() {
+    if (widget.weather.getStatus()) {
+      if (weatherLog.isNotEmpty) {
+        return MainContent(weather: widget.weather, weatherLog: weatherLog, iconUrl: iconUrl);
+      } else { return const LoadContent(); }
+    } else {return const InvalidContent();}
   }
 
   @override
@@ -57,6 +63,7 @@ class _Home extends State<Home> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text(
           'Like Weather',
@@ -81,7 +88,8 @@ class _Home extends State<Home> {
                   actions: [
                     ElevatedButton(
                       onPressed: () async {
-                        int key = await widget.weather.findCity(widget.weather.getCityName());
+                        int key = await widget.weather
+                            .findCity(widget.weather.getCityName());
                         print(key);
                         setState(() {
                           getWeatherData();
@@ -102,7 +110,6 @@ class _Home extends State<Home> {
           ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.blue,
         actions: [
           IconButton(
             onPressed: () => getWeatherData(),
@@ -115,39 +122,25 @@ class _Home extends State<Home> {
           ),
         ],
       ),
-      body: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Column(
-            children: [
-              const Padding(padding: EdgeInsets.only(top: 50.0)),
-              Text(
-                'Погода ${widget.weather.getCityName()}',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const Padding(padding: EdgeInsets.only(top: 50.0)),
-              Row(
-                children: [
-                  Image.asset(iconUrl),
-                  const Padding(padding: EdgeInsets.only(left: 30)),
-                  Text(
-                    getTemp(),
-                    style: const TextStyle(
-                      fontSize: 60,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.cyan.shade900,
+              Colors.orange.shade100,
             ],
           ),
-        ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            //MainContent(weather: widget.weather, weatherLog: weatherLog, iconUrl: iconUrl),
+            returnContent(),
+          ],
+        ),
       ),
-      backgroundColor: Colors.black38,
     );
   }
 }

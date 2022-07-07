@@ -4,6 +4,8 @@ class Weather {
   int _cityId = 0;
   String _cityName = "Омск";
 
+  bool _status = true;
+
   final _appid = '69856b5b43fc307c7b50ccafb0b06dbf';
   final _units = 'metric';
 
@@ -36,6 +38,10 @@ class Weather {
     return parameters;
   }
 
+  bool getStatus() {
+    return _status;
+  }
+
   String getCityName() {
     return _cityName;
   }
@@ -59,7 +65,7 @@ class Weather {
       _cityId = response.data['count'] == 0 ? 0 : response.data['list'][0]['id'];
       print(_cityId);
       return _cityId;
-    } on DioError  {return -1;}
+    } on DioError  { return -1;}
   }
 
   Future<Map<String, dynamic>> getNowWeather() async {
@@ -80,9 +86,11 @@ class Weather {
       weatherMap['Влажность'] = response.data['main']['humidity'];
       weatherMap['Скорость ветра'] = response.data['wind']['speed'];
       weatherMap['Направление ветра'] = _windDirection(response.data['wind']['deg']);
+      weatherMap['Угол ветра'] = response.data['wind']['deg'];
       print(weatherMap);
+      _status = true;
       return weatherMap;
-    } on DioError  {return weatherMap;}
+    } on DioError  {_status = false; return weatherMap;}
   }
 
   Future<List<dynamic>> getLongForecast() async {
@@ -107,8 +115,9 @@ class Weather {
         weatherMap['Направление ветра'] = _windDirection(i['wind']['deg']);
         forecastList.add(weatherMap);
       }
+      _status = true;
       print(forecastList);
       return forecastList;
-    } on DioError  {return forecastList;}
+    } on DioError  {_status = false; return forecastList;}
   }
 }
