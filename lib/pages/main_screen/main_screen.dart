@@ -53,6 +53,10 @@ class _Home extends State<Home> {
   void getForecastData() async {
     forecastLog = [];
     forecastLog = await widget.weather.getLongForecast();
+    setState(() {
+      iconUrl = iconsMap[weatherLog['Иконка']] ??
+          'assets/weather_icons/no_connect_white.png';
+    });
   }
 
   dynamic returnContent() {
@@ -127,7 +131,12 @@ class _Home extends State<Home> {
         centerTitle: true,
         actions: [
           IconButton(
-            onPressed: () {getWeatherData(); getForecastData();},
+            onPressed: () {
+              setState(() {
+                getWeatherData();
+                getForecastData();
+              });
+              },
             alignment: Alignment.topLeft,
             icon: const Icon(
               Icons.change_circle_outlined,
