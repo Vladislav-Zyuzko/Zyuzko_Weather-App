@@ -140,13 +140,6 @@ class _MainContent extends State<MainContent> {
             ],
           ),
         ),
-        // const Padding(padding: EdgeInsets.only(top: 30)),
-        // const Text("Прогноз на 5 дней", style: TextStyle(
-        //   color: Colors.white,
-        //   fontSize: 30,
-        //   fontWeight: FontWeight.bold,
-        // ),),
-        // const Padding(padding: EdgeInsets.only(top: 30)),
         Container(
           padding: const EdgeInsets.all(10.0),
           color: Colors.black45,
@@ -155,34 +148,37 @@ class _MainContent extends State<MainContent> {
               scrollDirection: Axis.horizontal,
               itemCount: widget.forecastLog.length,
               itemBuilder: (BuildContext context, int index) {
-                return Column(
-                  children: [
-                    Text(
-                      "${widget.forecastLog[index]['День']} ${widget.forecastLog[index]['Месяц']}",
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
+                return Container(
+                  padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 10.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        "${widget.forecastLog[index]['День']} ${widget.forecastLog[index]['Месяц']}",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    Text(
-                      "${widget.forecastLog[index]['Время']}",
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
+                      Text(
+                        "${widget.forecastLog[index]['Время']}",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    Image.asset(widget.iconsMap[widget.forecastLog[index]['Иконка']] ?? "assets/gifs/loader.gif", scale: 1.5,),
-                    Text(
-                      "${widget.forecastLog[index]['Температура']}°",
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 35,
-                        fontWeight: FontWeight.bold,
+                      Image.asset(widget.iconsMap[widget.forecastLog[index]['Иконка']] ?? "assets/gifs/loader.gif", scale: 1.5,),
+                      Text(
+                        "${widget.forecastLog[index]['Температура']}°",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 35,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 );
                 //return Icon(WeatherIcons.day_sunny);
               }

@@ -42,10 +42,10 @@ class _InitContentState extends State<InitContent> {
         ),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Column(children: [
-            const Padding(padding: EdgeInsets.only(top: 100)),
+            const Padding(padding: EdgeInsets.only(top: 200)),
             Container(
-              padding: EdgeInsets.all(10),
-              width: 300,
+              padding: EdgeInsets.all(15),
+              width: 320,
               decoration: BoxDecoration(
                 color: Colors.black45,
                 borderRadius: BorderRadius.circular(40),
