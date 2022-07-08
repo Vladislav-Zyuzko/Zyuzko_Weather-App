@@ -11,7 +11,7 @@ void main() async {
   runApp(
     MaterialApp(
       theme: ThemeData(primarySwatch: Colors.blueGrey),
-      initialRoute: userBox.get('city') == null ? '/init' : '/',
+      initialRoute: userBox.isEmpty ? '/init' : '/',
       routes: {
         '/': (context) => Home(weather: Weather(), userBox: userBox),
         '/init': (context) => InitContent(weather: Weather(), userBox: userBox),
