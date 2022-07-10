@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 class Weather {
 
   int _cityId = 0;
-  int _timezone = 21600;
+  int _timezone = 0;
 
   String _cityName = "Омск";
 
@@ -36,15 +36,15 @@ class Weather {
   }
 
   String _getLocalTime (int dt) {
-    return "${DateTime.fromMillisecondsSinceEpoch((dt + _timezone) * 1000).hour}:00";
+    return "${DateTime.fromMillisecondsSinceEpoch((dt + _timezone) * 1000, isUtc: true).hour}:00";
   }
 
   String _getLocalDay (int dt) {
-    return "${DateTime.fromMillisecondsSinceEpoch((dt + _timezone) * 1000).day}";
+    return "${DateTime.fromMillisecondsSinceEpoch((dt + _timezone) * 1000, isUtc: true).day}";
   }
 
   int _getLocalMonth (int dt) {
-    return DateTime.fromMillisecondsSinceEpoch((dt + _timezone) * 1000).month;
+    return DateTime.fromMillisecondsSinceEpoch((dt + _timezone) * 1000, isUtc: true).month;
   }
 
   Map<String, String> _queryParameters(Map<String, String> newParameter) {

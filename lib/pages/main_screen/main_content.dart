@@ -101,10 +101,9 @@ class _MainContent extends State<MainContent> {
   }
 
   Widget verticalBarChart() {
-
     List<dynamic> meanTempList = getMeanTempList();
 
-    LabelLayoutStrategy xContainerLabelLayoutStrategy ;
+    LabelLayoutStrategy xContainerLabelLayoutStrategy;
     ChartData chartData;
     ChartOptions chartOptions = const ChartOptions(
       labelCommonOptions: LabelCommonOptions(
@@ -115,7 +114,7 @@ class _MainContent extends State<MainContent> {
       ),
     );
     xContainerLabelLayoutStrategy = DefaultIterativeLabelLayoutStrategy(
-        options: chartOptions,
+      options: chartOptions,
     );
     chartData = ChartData(
       dataRows: [
@@ -315,17 +314,17 @@ class _MainContent extends State<MainContent> {
           Container(
               child: widget.forecastLog.isNotEmpty
                   ? Container(
-                    height: 300,
-                    width: MediaQuery.of(context).size.width,
-                    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 0.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white70,
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    child: verticalBarChart(),
-                  )
-                  : const SizedBox(height: 0, width: 0)
-          ),
+                      height: 300,
+                      width: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 0.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white70,
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      child: verticalBarChart(),
+                    )
+                  : const SizedBox(height: 0, width: 0)),
           const Padding(padding: EdgeInsets.only(top: 50)),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -333,10 +332,12 @@ class _MainContent extends State<MainContent> {
                 ? Container(
                     height: 250,
                     width: 700,
-                    padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 0.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 20.0, horizontal: 0.0),
                     decoration: const BoxDecoration(
                       color: Colors.white70,
-                      borderRadius: BorderRadius.only(topRight: Radius.circular(50.0)),
+                      borderRadius:
+                          BorderRadius.only(topRight: Radius.circular(50.0)),
                     ),
                     child: linearChart(),
                   )
