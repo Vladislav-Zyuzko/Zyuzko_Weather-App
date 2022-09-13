@@ -69,9 +69,6 @@ class _MainContent extends State<MainContent> {
       labelCommonOptions: const LabelCommonOptions(
         labelTextScaleFactor: 1.4,
       ),
-      dataContainerOptions: const DataContainerOptions(
-        startYAxisAtDataMinRequested: true,
-      ),
     );
 
     chartData = ChartData(
